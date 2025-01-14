@@ -5,22 +5,31 @@ format: gfm
 
 
 ```{r}
-remotes::install_cran("stats19")
+# remotes::install_cran("stats19")
+remotes::install_github("ropensci/stats19")
 library(stats19)
 library(tidyverse)
 ```
 
 ```{r}
-collisions_2023 = get_stats19(year = 2023, type = "col", data_dir = "/tmp")
+collisions_2023 = get_stats19(year = 2023)
+names(collisions_2023)
 # https://data.dft.gov.uk/road-accidents-safety-data/dft-road-casualty-statistics-collision-2023.csv
+vehicles_2023 = get_stats19(year = 2023, type = "vehicle")
+casualties_2023 = get_stats19(year = 2023, type = "casualty")
 ```
 
 ```{r}
-collisions_2023 = read_collisions(data_dir = ".")
-collisions_2023 = read_csv("dft-road-casualty-statistics-collision-2023.csv")
-head(collisions_2023$accident_severity)
+table(collisions_2023$local_authority_ons_district)
+collisions_sf = format_sf(collisions_2023)
+collisions_trafford = collisions_sf |>
+  filter(str_detect(local_authority_ons_district, "Trafford")) 
+```
 
-collisions_2023 = format_collisions(collisions_2023)
-head(collisions_2023$accident_severity)
-
+```{r}
+# ggplot map:
+ggplot() +
+  geom_sf(data = collisions_trafford, aes(colour = accident_severity)) +
+  scale_colour_viridis_d() +
+  theme_void()
 ```
