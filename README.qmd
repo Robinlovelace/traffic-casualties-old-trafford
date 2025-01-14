@@ -1,0 +1,26 @@
+---
+format: gfm
+---
+
+
+
+```{r}
+remotes::install_cran("stats19")
+library(stats19)
+library(tidyverse)
+```
+
+```{r}
+collisions_2023 = get_stats19(year = 2023, type = "col", data_dir = "/tmp")
+# https://data.dft.gov.uk/road-accidents-safety-data/dft-road-casualty-statistics-collision-2023.csv
+```
+
+```{r}
+collisions_2023 = read_collisions(data_dir = ".")
+collisions_2023 = read_csv("dft-road-casualty-statistics-collision-2023.csv")
+head(collisions_2023$accident_severity)
+
+collisions_2023 = format_collisions(collisions_2023)
+head(collisions_2023$accident_severity)
+
+```
